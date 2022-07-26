@@ -1,21 +1,22 @@
 
-
-const gameBoard = (function() {
-    const board = [];
-    return {
-        board,
-    };
-})();
-
-const player = function (name, move) {
-    return {getPlayerName,
-        name,
-        move};
+const createPlayer = function (name, symbol) {
+    return {name, symbol};
 };
 
-const player1 = player('Player 1', 'X');
-const player2 = player('Player 2', 'O');
+const player1 = createPlayer('Player 1', 'X');
+const player2 = createPlayer('Player 2', 'O');
 
-const displayController = (function() {
-    
-})
+
+const gameBoard = (function() {
+    const board = ["X", "O", "X", "", "X"];
+
+    return {board,};
+})();
+
+const renderArrayToScreen = (function() {
+    const boxes = document.querySelectorAll('.grid-box');
+    console.log(boxes);
+    boxes.forEach((boxes, index) => {
+        boxes.textContent = gameBoard.board[index];
+    })
+})();
