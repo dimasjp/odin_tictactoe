@@ -12,17 +12,21 @@ const game = (function() {
     const player1 = createPlayer('Player 1', 'X', true);
     const player2 = createPlayer('Player 2', 'O', false);
 
+    let turns = 0;
+    let winFlag = false;
+    let winner = null;
+
     const playerMove = (function() {
         const boxes = document.querySelectorAll('.grid-box');
         boxes.forEach((boxes) => {
             boxes.addEventListener('click', e => {
-                if (player1.turn == true && e.target.textContent == "") {
+                if (player1.turn == true && e.target.textContent == "" && winFlag == false) {
                     gameBoard.board[e.target.id] = player1.symbol;
                     boxes.textContent = player1.symbol;
                     player1.turn = false;
                     player2.turn = true;
                     console.log(gameBoard.board);
-                } else if (player2.turn == true && e.target.textContent == "") {
+                } else if (player2.turn == true && e.target.textContent == "" && winFlag == false) {
                     gameBoard.board[e.target.id] = player2.symbol;
                     boxes.textContent = player2.symbol;
                     player1.turn = true;
@@ -31,11 +35,41 @@ const game = (function() {
                 } else {
                     return;
                 }
+                checkWinner();
             })
         })
     })()
-    return {playerMove};
-})()
+
+    const winCondition = [
+        [0,1,2],
+        [3,4,5],
+        [6,7,8],
+        [0,3,6],
+        [1,4,7],
+        [2,5,8],
+        [0,4,8],
+        [2,4,6],
+    ]
+
+    function checkWinner() {
+        turns++;
+        winCondition.forEach((item, id) => {
+            if (gameBoard.board[item[0]] === player1.symbol && gameBoard.board[item[1]] === player1.symbol && gameBoard.board[item[2]] === player1.symbol) {
+                console.log("X Wins!");
+                winFlag = true;
+                winner = player1;
+            } else if (gameBoard.board[item[0]] === player2.symbol && gameBoard.board[item[1]] === player2.symbol && gameBoard.board[item[2]] === player2.symbol) {
+                console.log("O Wins!");
+                winFlag = true;
+                winner = player2;
+            } else if (winFlag === false && winner === null && turns == 9) {
+                console.log("Tie");
+            }
+        })
+    }
+
+    return {playerMove, checkWinner, turns};
+})();
 
 // const renderArrayToScreen = (function() {
 //     const boxes = document.querySelectorAll('.grid-box');
