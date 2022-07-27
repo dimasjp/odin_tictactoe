@@ -36,6 +36,7 @@ const game = (function() {
                     return;
                 }
                 checkWinner();
+                checkTie();
             })
         })
     })()
@@ -62,13 +63,18 @@ const game = (function() {
                 console.log("O Wins!");
                 winFlag = true;
                 winner = player2;
-            } else if (winFlag === false && winner === null && turns == 9) {
-                console.log("Tie");
             }
+        console.log("Turn " + turns);
         })
+    };
+
+    function checkTie() {
+        if (winFlag === false && winner === null && turns == 9) {
+            console.log("Tie!");
+        }
     }
 
-    return {playerMove, checkWinner, turns};
+    return {playerMove, checkWinner, checkTie, turns};
 })();
 
 // const renderArrayToScreen = (function() {
