@@ -1,5 +1,5 @@
 
-const gameBoard = (function() {
+const gameBoard = (() => {
     let board = [];
     return {board};
 })();
@@ -8,7 +8,7 @@ const createPlayer = function (name, symbol, turn) {
     return {name, symbol, turn};
 };
 
-const game = (function() {
+const game = (() => {
     const player1 = createPlayer('Player 1', 'X', true);
     const player2 = createPlayer('Player 2', 'O', false);
 
@@ -16,7 +16,7 @@ const game = (function() {
     let winFlag = false;
     let winner = null;
 
-    const playerMove = (function() {
+    const playerMove = (() => {
         const boxes = document.querySelectorAll('.grid-box');
         boxes.forEach((boxes) => {
             boxes.addEventListener('click', e => {
@@ -52,29 +52,60 @@ const game = (function() {
         [2,4,6],
     ]
 
-    function checkWinner() {
+    const checkWinner = () => {
         turns++;
         winCondition.forEach((item, id) => {
             if (gameBoard.board[item[0]] === player1.symbol && gameBoard.board[item[1]] === player1.symbol && gameBoard.board[item[2]] === player1.symbol) {
                 console.log("X Wins!");
                 winFlag = true;
-                winner = player1;
+                game.winner = player1;
             } else if (gameBoard.board[item[0]] === player2.symbol && gameBoard.board[item[1]] === player2.symbol && gameBoard.board[item[2]] === player2.symbol) {
                 console.log("O Wins!");
                 winFlag = true;
-                winner = player2;
+                game.winner = player2;
             }
         console.log("Turn " + turns);
+        displayController.winDisplay();
         })
     };
 
-    function checkTie() {
+    const checkTie = () => {
         if (winFlag === false && winner === null && turns == 9) {
             console.log("Tie!");
+            game.winner = "tie";
         }
+        displayController.winDisplay();
     }
 
-    return {playerMove, checkWinner, checkTie, turns};
+    const gameReset = () => {
+        game.winner = null;
+        player1.turn = true;
+        player2.turn = false;
+        turns = 0;
+    }
+
+    return {playerMove, checkWinner, checkTie, gameReset, turns, winner, player1, player2};
+})();
+
+const displayController = (() => {  
+    const gameStat = document.querySelector('.game-status');
+
+    const winDisplay = () => {
+        if(game.winner === game.player1) {
+            gameStat.textContent = game.player1.symbol + " Won!";
+        } else if(game.winner === game.player2) {
+            gameStat.textContent =  game.player2.symbol + " Won!";
+        } else if(game.winner === "tie") {
+            gameStat.textContent = "Tie!";
+        } else {
+            return;
+        };
+    }
+
+    const gameReplay = () => {
+        game.gameReset();
+    }
+    return {winDisplay, gameReplay}
 })();
 
 // const renderArrayToScreen = (function() {
