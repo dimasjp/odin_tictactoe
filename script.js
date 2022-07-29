@@ -20,14 +20,14 @@ const game = (() => {
         const boxes = document.querySelectorAll('.grid-box');
         boxes.forEach((boxes) => {
             boxes.addEventListener('click', e => {
-                if (player1.turn == true && e.target.textContent == "" && winFlag == false) {
+                if (player1.turn == true && e.target.textContent == "" && game.winFlag == false && game.winner == null) {
                     gameBoard.board[e.target.id] = player1.symbol;
                     boxes.textContent = player1.symbol;
                     boxes.style.color = '#0038A8';
                     player1.turn = false;
                     player2.turn = true;
                     console.log(gameBoard.board);
-                } else if (player2.turn == true && e.target.textContent == "" && winFlag == false) {
+                } else if (player2.turn == true && e.target.textContent == "" && game.winFlag == false && game.winner == null) {
                     gameBoard.board[e.target.id] = player2.symbol;
                     boxes.textContent = player2.symbol;
                     boxes.style.color = '#D60270';
@@ -59,11 +59,11 @@ const game = (() => {
         winCondition.forEach((item, id) => {
             if (gameBoard.board[item[0]] === player1.symbol && gameBoard.board[item[1]] === player1.symbol && gameBoard.board[item[2]] === player1.symbol) {
                 console.log("X Wins!");
-                winFlag = true;
+                game.winFlag = true;
                 game.winner = player1;
             } else if (gameBoard.board[item[0]] === player2.symbol && gameBoard.board[item[1]] === player2.symbol && gameBoard.board[item[2]] === player2.symbol) {
                 console.log("O Wins!");
-                winFlag = true;
+                game.winFlag = true;
                 game.winner = player2;
             }
         console.log("Turn " + turns);
@@ -72,22 +72,24 @@ const game = (() => {
     };
 
     const checkTie = () => {
-        if (winFlag === false && winner === null && turns == 9) {
+        if (game.winFlag === false && game.winner === null && turns == 9) {
             console.log("Tie!");
             game.winner = "tie";
         }
         displayController.winDisplay();
     }
 
-    // const gameReset = () => {
-    //     game.winner = null;
-    //     player1.turn = true;
-    //     player2.turn = false;
-    //     turns = 0;
-    //     gameBoard.board.splice(0, gameBoard.board.length);
-    // }
+    const gameReset = () => {
+        game.winner = null;
+        game.winFlag = false;
+        player1.turn = true;
+        player2.turn = false;
+        turns = 0;
+        gameBoard.board.splice(0, gameBoard.board.length);
+        console.log(winner, winFlag, player1.turn, player2.turn, turns, gameBoard.board)
+    }
 
-    return {playerMove, checkWinner, checkTie, turns, winner, player1, player2};
+    return {playerMove, checkWinner, checkTie, turns, winFlag, winner, player1, player2, gameReset};
 })();
 
 const displayController = (() => {  
@@ -97,15 +99,15 @@ const displayController = (() => {
     const boxes = document.querySelectorAll('.grid-box');
 
     const winDisplay = () => {
-        if(game.winner === game.player1) {
+        if(game.winner == game.player1) {
             gameResult.textContent = game.player1.name + " Wins!";
             gameEnd.style.color = '#0038A8';
             gameEnd.style.border = '2px solid #0038A8';
-        } else if(game.winner === game.player2) {
+        } else if(game.winner == game.player2) {
             gameResult.textContent =  game.player2.name  + " Wins!";
             gameEnd.style.color = '#D60270';
             gameEnd.style.border = '2px solid #D60270';
-        } else if(game.winner === "tie") {
+        } else if(game.winner == "tie") {
             gameResult.textContent = "Tie!";
             gameEnd.style.color = '#9B4F96';
             gameEnd.style.border = '2px solid #9B4F96';
@@ -116,25 +118,18 @@ const displayController = (() => {
         gameEnd.style.display = 'flex';
     }
 
-    // const gameReplay = () => {
-    //     game.gameReset();
+    const gameReplay = () => {
+        game.gameReset();
 
-    //     boxes.forEach((boxes) => {
-    //         boxes.textContent = "";
-    //     });
-    //     gameEnd.style.display = 'none';
-    //     gameResult.textContent = "";
-    //     replayText.textContent = "";
-    // }
+        boxes.forEach((boxes) => {
+            boxes.textContent = "";
+        });
+        gameEnd.style.display = 'none';
+        gameResult.textContent = "";
+        replayText.textContent = "";
+    }
 
-    // gameEnd.addEventListener('click', gameReplay);
-    return {winDisplay,}
+    gameEnd.addEventListener('click', gameReplay);
+    return {winDisplay, gameReplay}
 })();
 
-// const renderArrayToScreen = (function() {
-//     const boxes = document.querySelectorAll('.grid-box');
-//     console.log(boxes);
-//     boxes.forEach((boxes, index) => {
-//         boxes.textContent = gameBoard.board[index];
-//     })
-// })();

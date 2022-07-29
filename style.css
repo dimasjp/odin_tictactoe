@@ -40,6 +40,7 @@ header {
 
 .game-end {
     display: none;
+    background-color: white;
     font-family: 'Poppins';
     flex-direction: column;
     border-radius: 7px;
