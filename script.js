@@ -23,12 +23,14 @@ const game = (() => {
                 if (player1.turn == true && e.target.textContent == "" && winFlag == false) {
                     gameBoard.board[e.target.id] = player1.symbol;
                     boxes.textContent = player1.symbol;
+                    boxes.style.color = '#0038A8';
                     player1.turn = false;
                     player2.turn = true;
                     console.log(gameBoard.board);
                 } else if (player2.turn == true && e.target.textContent == "" && winFlag == false) {
                     gameBoard.board[e.target.id] = player2.symbol;
                     boxes.textContent = player2.symbol;
+                    boxes.style.color = '#D60270';
                     player1.turn = true;
                     player2.turn = false;
                     console.log(gameBoard.board);
@@ -77,35 +79,56 @@ const game = (() => {
         displayController.winDisplay();
     }
 
-    const gameReset = () => {
-        game.winner = null;
-        player1.turn = true;
-        player2.turn = false;
-        turns = 0;
-    }
+    // const gameReset = () => {
+    //     game.winner = null;
+    //     player1.turn = true;
+    //     player2.turn = false;
+    //     turns = 0;
+    //     gameBoard.board.splice(0, gameBoard.board.length);
+    // }
 
-    return {playerMove, checkWinner, checkTie, gameReset, turns, winner, player1, player2};
+    return {playerMove, checkWinner, checkTie, turns, winner, player1, player2};
 })();
 
 const displayController = (() => {  
-    const gameStat = document.querySelector('.game-status');
+    const gameEnd = document.querySelector('.game-end');
+    const gameResult = document.querySelector('.game-result');
+    const replayText = document.querySelector('.replay-text');
+    const boxes = document.querySelectorAll('.grid-box');
 
     const winDisplay = () => {
         if(game.winner === game.player1) {
-            gameStat.textContent = game.player1.symbol + " Won!";
+            gameResult.textContent = game.player1.name + " Wins!";
+            gameEnd.style.color = '#0038A8';
+            gameEnd.style.border = '2px solid #0038A8';
         } else if(game.winner === game.player2) {
-            gameStat.textContent =  game.player2.symbol + " Won!";
+            gameResult.textContent =  game.player2.name  + " Wins!";
+            gameEnd.style.color = '#D60270';
+            gameEnd.style.border = '2px solid #D60270';
         } else if(game.winner === "tie") {
-            gameStat.textContent = "Tie!";
+            gameResult.textContent = "Tie!";
+            gameEnd.style.color = '#9B4F96';
+            gameEnd.style.border = '2px solid #9B4F96';
         } else {
             return;
         };
+        replayText.textContent = "Click to play again";
+        gameEnd.style.display = 'flex';
     }
 
-    const gameReplay = () => {
-        game.gameReset();
-    }
-    return {winDisplay, gameReplay}
+    // const gameReplay = () => {
+    //     game.gameReset();
+
+    //     boxes.forEach((boxes) => {
+    //         boxes.textContent = "";
+    //     });
+    //     gameEnd.style.display = 'none';
+    //     gameResult.textContent = "";
+    //     replayText.textContent = "";
+    // }
+
+    // gameEnd.addEventListener('click', gameReplay);
+    return {winDisplay,}
 })();
 
 // const renderArrayToScreen = (function() {
